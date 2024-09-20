@@ -2,7 +2,7 @@ import socket
 import threading
 import json
 import time  
-from game import QuizGame
+from game import GameController
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 class QuizServer:
@@ -14,15 +14,18 @@ class QuizServer:
         self.server_socket.bind((self.host, self.port))
         self.server_socket.listen(5)
         print(f"Server listening on {self.host}:{self.port}")
-        self.quiz_game = QuizGame()
+        self.quiz_game = GameController()
         self.lock = threading.Lock()
+        self.timer_duration = 15  # Default value for the timer
+
 
     def handle_client(self, client_socket):
         print("Handling new client connection.")
         player_id = client_socket.getpeername()[0]
         try:
             with self.lock:
-                if not self.quiz_game.add_player(player_id):
+                # Pass the current timer_duration when adding a new player
+                if not self.quiz_game.add_player(player_id, time_limit=self.timer_duration):
                     response_body = json.dumps({'error': 'Maximum number of players reached'})
                     response_header = (
                         'HTTP/1.1 403 Forbidden\r\n'
@@ -73,19 +76,19 @@ class QuizServer:
                                     'type': 'question',
                                     'question': question['question'],
                                     'answers': question['answers'],
-                                    'time_limit': question['time_limit']
+                                    'time_limit': question['time_limit']  # Include time limit here
                                 }
                             else:
                                 response = {
                                     'type': 'end',
                                     'message': 'Quiz completed',
                                     'score': self.quiz_game.get_player_score(player_id),
-                                    'all_scores': self.quiz_game.get_all_scores()  
+                                    'all_scores': self.quiz_game.get_all_scores()
                                 }
                                 time.sleep(0)
                                 self.quiz_game.remove_player(player_id)
-                                self.quiz_game.add_player(player_id)  
-                        
+                                self.quiz_game.add_player(player_id)
+
                         response_body = json.dumps(response)
                         response_header = (
                             'HTTP/1.1 200 OK\r\n'
@@ -95,6 +98,7 @@ class QuizServer:
                             'Connection: keep-alive\r\n\r\n'
                         )
                         client_socket.sendall(response_header.encode('utf-8') + response_body.encode('utf-8'))
+
 
                     elif path == '/new_game':
                         with self.lock:
@@ -256,15 +260,35 @@ class GUIRequestHandler(BaseHTTPRequestHandler):
                     })
             
             self.wfile.write(json.dumps(status).encode())
+
+        elif self.path == '/get_timer':  # New GET request to fetch current timer value
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            timer_info = {'timer': self.server.quiz_server.timer_duration}
+            self.wfile.write(json.dumps(timer_info).encode())
+
         else:
             self.send_error(404)
 
-    def do_OPTIONS(self):
-        self.send_response(200)
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
-        self.end_headers()
+    def do_POST(self):
+        if self.path == '/set_timer':
+            content_length = int(self.headers['Content-Length'])
+            post_data = self.rfile.read(content_length)
+            data = json.loads(post_data.decode('utf-8'))
+            
+            with self.server.quiz_server.lock:
+                self.server.quiz_server.timer_duration = int(data.get('timer', 15))
+                print(f"Timer set to {self.server.quiz_server.timer_duration} seconds")
+
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            response = {'message': f"Timer set to {self.server.quiz_server.timer_duration} seconds"}
+            self.wfile.write(json.dumps(response).encode())
+
 
 if __name__ == "__main__":
     server = QuizServer()

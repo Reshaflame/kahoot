@@ -53,7 +53,7 @@ fi
 # Check if the virtual environment exists
 if [ ! -d "venv" ]; then
     echo "Creating virtual environment..."
-    python -m venv venv
+    python3 -m venv venv
 fi
 
 # Activate the virtual environment
@@ -82,9 +82,9 @@ if lsof -i :5000 >/dev/null; then
 fi
 
 echo "Starting Python servers..."
-python ./server/server.py & 
+python3 ./server/server.py & 
 SERVER_PID=$!
-python ./server/server_gui.py &  
+python3 ./server/server_gui.py &  
 GUI_SERVER_PID=$!
 
 

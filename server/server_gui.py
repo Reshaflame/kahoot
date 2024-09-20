@@ -10,7 +10,7 @@ import socket
 class ServerGUI:
     def __init__(self, master):
         self.master = master
-        master.title("Dean's Quiz Server GUI")
+        master.title("Quiz Server GUI")
         master.geometry("900x600")
         master.configure(bg='#f0f0f0')
 

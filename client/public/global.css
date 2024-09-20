@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	font-family: 'Roboto', sans-serif;
+	background: linear-gradient(135deg, #f0e6f6, #e1f3f8);
+}
+
+body {
+	color: #2e2e2e;
+	padding: 20px;
+	box-sizing: border-box;
+}
+
+h1 {
+	text-align: center;
+	font-size: 36px;
+	color: #3c3c6b;
+}
+
+.title {
+	width: 100%;
+	text-align: center;
+	font-size: 42px;
+	line-height: 56px;
+	color: #3e228a;
+	margin-bottom: 20px;
+	text-shadow: 2px 2px 4px #aaa;
+}
+
+.question {
+	width: 100%;
+	text-align: center;
+	font-size: 34px;
+	line-height: 42px;
+	color: #3e228a;
+	margin-bottom: 28px;
+	text-shadow: 1px 1px 2px #bbb;
+}
+
+.answers-container {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 20px;
+	justify-content: center;
+	margin-bottom: 30px;
+}
+
+.answer-block {
+	width: 100%;
+	height: 200px;
+	border-radius: 12px;
+	padding: 18px;
+	font-size: 22px;
+	line-height: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	box-sizing: border-box;
+	background: #f2f6ff;
+	border: 2px solid #b8d4ff;
+	transition: background-color 0.3s, transform 0.2s;
+}
+
+.answer-block:hover {
+	background-color: #e1e9ff;
+	transform: scale(1.05);
+}
+
+.submit-button {
+	width: 100%;
+	max-width: 300px;
+	height: 65px;
+	background: #d0efff;
+	border-radius: 16px;
+	font-size: 22px;
+	line-height: 30px;
+	color: #1e1e1e;
+	border: none;
+	cursor: pointer;
+	margin: 0 auto;
+	display: block;
+	box-shadow: 2px 2px 6px #888;
+}
+
+.submit-button:hover {
+	background-color: #b0dfff;
+}
+
+.submit-button:disabled {
+	background-color: #aaa;
+	cursor: not-allowed;
+}
+
+input[type="radio"] {
+	margin-right: 10px;
+}

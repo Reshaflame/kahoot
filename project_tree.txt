@@ -1,0 +1,41 @@
+.
+├── README.md
+├── client
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── public
+│   │   ├── build
+│   │   │   ├── bundle.css
+│   │   │   ├── bundle.js
+│   │   │   └── bundle.js.map
+│   │   ├── favicon.png
+│   │   ├── global.css
+│   │   └── index.html
+│   ├── rollup.config.js
+│   ├── scripts
+│   │   └── setupTypeScript.js
+│   └── src
+│       ├── API.svelte
+│       ├── App.svelte
+│       ├── Challenge.svelte
+│       ├── CircularProgressbar.svelte
+│       ├── ProgressBar.svelte
+│       └── main.js
+├── project_tree.txt
+├── server
+│   ├── __pycache__
+│   │   ├── game.cpython-310.pyc
+│   │   └── questions.cpython-310.pyc
+│   ├── game.py
+│   ├── questions.py
+│   ├── requirements.txt
+│   ├── server.py
+│   └── server_gui.py
+├── server_web_gui
+│   ├── requirements.txt
+│   ├── server_web_gui.py
+│   └── templates
+│       └── index.html
+└── start.sh
+
+9 directories, 29 files

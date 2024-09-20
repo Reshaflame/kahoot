@@ -1,14 +1,24 @@
 import json
 import time
 import random
-from questions import get_regular_questions, get_math_questions, get_science_questions, get_history_questions, get_sports_questions, get_movies_questions, get_geography_questions
+from questions import (
+    get_regular_questions, 
+    get_math_questions, 
+    get_science_questions, 
+    get_history_questions, 
+    get_sports_questions, 
+    get_movies_questions, 
+    get_geography_questions, 
+    get_horror_literature_questions  # New geeky category
+)
 
 class PlayerGame:
-    def __init__(self, player_id, question_type='both'):
+    def __init__(self, player_id, question_type='both', time_limit=15):  # Add default time_limit
         self.player_id = player_id
         self.current_question = 0
         self.score = 0
         self.last_answer = None  
+        self.time_limit = time_limit  # Store the time limit for the player
         self.questions = self.generate_questions(question_type)
 
     # generate a list of questions based on the specified type
@@ -20,7 +30,9 @@ class PlayerGame:
         sports_questions = get_sports_questions()
         movies_questions = get_movies_questions()
         geography_questions = get_geography_questions()
+        horror_questions = get_horror_literature_questions()  # Add horror literature questions
 
+        # Handle specific categories, including the new horror literature category
         if question_type == 'math':
             return random.sample(math_questions, min(len(math_questions), 5))
         elif question_type == 'regular':
@@ -35,14 +47,25 @@ class PlayerGame:
             return random.sample(movies_questions, min(len(movies_questions), 5))
         elif question_type == 'geography':
             return random.sample(geography_questions, min(len(geography_questions), 5))
+        elif question_type == 'horror':  # New category for horror literature
+            return random.sample(horror_questions, min(len(horror_questions), 5))
         else: 
-            all_questions = regular_questions + math_questions + science_questions + history_questions + sports_questions + movies_questions + geography_questions
+            # Combine all categories for a mix of questions
+            all_questions = (
+                regular_questions + math_questions + science_questions + history_questions +
+                sports_questions + movies_questions + geography_questions + horror_questions
+            )
             return random.sample(all_questions, 5)
 
-    # get the current question for the player
+    # get the current question for the player and return the time limit
     def get_current_question(self):
         if self.current_question < len(self.questions):
-            return self.questions[self.current_question]
+            question = self.questions[self.current_question]
+            question_with_time = {
+                **question,
+                'time_limit': self.time_limit  # Include the time limit in the question
+            }
+            return question_with_time
         return None
 
     # handle the player's answer and update the score
@@ -67,12 +90,13 @@ class QuizGame:
         self.players = {}
         self.max_players = 5
 
-    # add a new player to the game
-    def add_player(self, player_id, question_type='both'):
+    # Add a new player to the game with the ability to pass a time limit
+    def add_player(self, player_id, question_type='both', time_limit=15):
         if len(self.players) < self.max_players:
-            self.players[player_id] = PlayerGame(player_id, question_type)
+            self.players[player_id] = PlayerGame(player_id, question_type, time_limit)
             return True
         return False
+
 
     # remove a player from the game
     def remove_player(self, player_id):
