@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
 import requests
-import json
 import threading
 import time
 import socket
